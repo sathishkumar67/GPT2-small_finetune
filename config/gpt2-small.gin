@@ -1,0 +1,9 @@
+GPTConfig.block_size = 1024            
+GPTConfig.vocab_size = 50257           
+GPTConfig.n_layer = 12                 
+GPTConfig.n_head = 12                  
+GPTConfig.n_embd = 768                 
+GPTConfig.batch_size = 16              
+GPTConfig.learning_rate = 3e-4         
+GPTConfig.seed = 42                    
+GPTConfig.epochs = 1
