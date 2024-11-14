@@ -72,4 +72,12 @@ def run_ddp_training():
 
 
 if __name__ == "__main__":
+    import os
+    import torch
+
+    os.environ['MASTER_ADDR'] = 'localhost'
+    os.environ['MASTER_PORT'] = '12355'
+    os.environ['WORLD_SIZE'] = str(torch.cuda.device_count())  # Total number of GPUs on this node
+    os.environ['RANK'] = '0'  # Rank 0 for a single-node setup
+
     run_ddp_training()
