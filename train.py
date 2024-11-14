@@ -75,7 +75,7 @@ def trainer(rank, world_size):
             loss.backward()
 
             # Gradient clipping
-            grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), config.max_grad_norm)
+            grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), config.clip_grad_norm_val)
             
             # Update weights and biases
             optimizer.step()
@@ -91,7 +91,7 @@ def trainer(rank, world_size):
     if rank == 0:
         np.save("training_loss.npy", np.array(training_loss))
         np.save("gradient_norms.npy", np.array(gradient_norms))
-        
+
     # Cleanup
     dist.destroy_process_group()
 
