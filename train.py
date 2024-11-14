@@ -60,32 +60,35 @@ def trainer(rank, world_size):
     training_loss = []
     gradient_norms = []
     for epoch in tqdm(range(config.epochs), desc="Training Epochs", unit="epoch"):  # Loop over the dataset multiple times
-        sampler.set_epoch(epoch)  # Shuffle data per epoch for each 
-        for batch, (inputs, labels) in enumerate(tqdm(dataloader, desc=f"Epoch {epoch + 1}", unit="batch", leave=False)):  # wrap dataloader with tqdm for batch progress
-            # Move data to device
-            inputs, labels = inputs.to(device), labels.to(device)
+        sampler.set_epoch(epoch)  # Shuffle data per epoch for 
+        
+        # Iterate over the DataLoader for training data
+        with tqdm(dataloader, desc=f"Epoch {epoch + 1}", unit="batch", leave=False) as pbar:
+            for batch, (inputs, labels) in enumerate(pbar):  # wrap dataloader with tqdm for batch progress
+                # Move data to device
+                inputs, labels = inputs.to(device), labels.to(device)
 
-            # Forward pass
-            _, loss = model(inputs, labels)
-            
-            # Zero gradients before backward pass
-            optimizer.zero_grad()
-            
-            # Backward pass
-            loss.backward()
+                # Forward pass
+                _, loss = model(inputs, labels)
+                
+                # Zero gradients before backward pass
+                optimizer.zero_grad()
+                
+                # Backward pass
+                loss.backward()
 
-            # Gradient clipping
-            grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), config.clip_grad_norm_val)
-            
-            # Update weights and biases
-            optimizer.step()
+                # Gradient clipping
+                grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), config.clip_grad_norm_val)
+                
+                # Update weights and biases
+                optimizer.step()
 
-            # Log training loss and gradient norms
-            training_loss.append(loss.item())
-            gradient_norms.append(grad_norm)
+                # Log training loss and gradient norms
+                training_loss.append(loss.item())
+                gradient_norms.append(grad_norm.item())
 
-            if rank == 0:  # Log only on rank 0
-                tqdm.write(f"Epoch {epoch + 1}, Batch {batch + 1}, Loss: {loss.item()}, Gradient Norm: {grad_norm}")
+                # Log training progress
+                pbar.set_postfix(loss=loss.item(), grad_norm=grad_norm.item())
 
     # Log training loss and gradient norms
     if rank == 0:
