@@ -192,6 +192,7 @@ class GPT2Wrapper(L.LightningModule):
         self.config = config
         self.model = model    
         self.optimizer = self.configure_optimizers()
+        self.train_loss = []
 
     def forward(self, idx, targets=None):
         return self.model(idx, targets)
@@ -202,8 +203,9 @@ class GPT2Wrapper(L.LightningModule):
         optimizer.zero_grad()
         
         batch, label = batch
-        logits, loss = self.model(batch, label)
+        _, loss = self.model(batch, label)
         self.log("Train_Loss", loss, prog_bar=True)
+        self.train_loss.append(loss.item())
 
         return loss
     
