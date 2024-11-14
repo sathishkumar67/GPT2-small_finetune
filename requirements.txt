@@ -1,0 +1,4 @@
+gin-config
+lightning
+huggingface_hub
+deepspeed
