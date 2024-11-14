@@ -62,7 +62,7 @@ def trainer(rank, world_size):
     for epoch in range(config.epochs) :  # Loop over the dataset multiple times
         sampler.set_epoch(epoch)  # Shuffle data per epoch for 
         
-        for batch, (inputs, labels) in enumerate(tqdm(dataloader)):
+        for batch, (inputs, labels) in enumerate(tqdm(dataloader, )):
             # Move data to device
             inputs, labels = inputs.to(device), labels.to(device)
 
@@ -85,7 +85,7 @@ def trainer(rank, world_size):
             training_loss.append(loss.item())
             gradient_norms.append(grad_norm.item())
 
-            tqdm.postfix = f"Epoch: {epoch+1}, Batch: {batch+1}, Loss: {loss.item():.4f}, Grad Norm: {grad_norm.item():.4f}"
+            tqdm.postfix(loss=loss.item(), grad_norm=grad_norm.item())
             
     # Log training loss and gradient norms
     if rank == 0:
