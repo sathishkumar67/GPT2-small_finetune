@@ -4,7 +4,6 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 import gin
-import lightning as L
 from typing import Tuple
 
 
@@ -185,29 +184,30 @@ class GPT(nn.Module):
         return model
     
 
+# import lightning as L
 
-class GPT2Wrapper(L.LightningModule):
-    def __init__(self, config: GPTConfig, model: GPT):
-        super().__init__()
-        self.config = config
-        self.model = model    
-        self.optimizer = self.configure_optimizers()
-        self.train_loss = []
+# class GPT2Wrapper(L.LightningModule):
+#     def __init__(self, config: GPTConfig, model: GPT):
+#         super().__init__()
+#         self.config = config
+#         self.model = model    
+#         self.optimizer = self.configure_optimizers()
+#         self.train_loss = []
 
-    def forward(self, idx, targets=None):
-        return self.model(idx, targets)
+#     def forward(self, idx, targets=None):
+#         return self.model(idx, targets)
 
-    def training_step(self, batch, batch_idx):
-        self.model.train()
-        optimizer = self.optimizers()
-        optimizer.zero_grad()
+#     def training_step(self, batch, batch_idx):
+#         self.model.train()
+#         optimizer = self.optimizers()
+#         optimizer.zero_grad()
         
-        batch, label = batch
-        _, loss = self.model(batch, label)
-        self.log("Train_Loss", loss, prog_bar=True)
-        self.train_loss.append(loss.item())
+#         batch, label = batch
+#         _, loss = self.model(batch, label)
+#         self.log("Train_Loss", loss, prog_bar=True)
+#         self.train_loss.append(loss.item())
 
-        return loss
+#         return loss
     
-    def configure_optimizers(self):
-        return torch.optim.AdamW(self.model.parameters(), lr=self.config.learning_rate, betas=self.config.betas, eps=self.config.eps, weight_decay=self.config.weight_decay)
+#     def configure_optimizers(self):
+#         return torch.optim.AdamW(self.model.parameters(), lr=self.config.learning_rate, betas=self.config.betas, eps=self.config.eps, weight_decay=self.config.weight_decay)
