@@ -85,9 +85,8 @@ def trainer(rank, world_size):
             training_loss.append(loss.item())
             gradient_norms.append(grad_norm.item())
 
-        if rank == 0:
-            print(f"Epoch [{epoch + 1}/{config.epochs}], Loss: {loss.item()}, Gradient Norm: {grad_norm.item()}")
-
+            tqdm.postfix = f"Epoch: {epoch+1}, Batch: {batch+1}, Loss: {loss.item():.4f}, Grad Norm: {grad_norm.item():.4f}"
+            
     # Log training loss and gradient norms
     if rank == 0:
         np.save("training_loss.npy", np.array(training_loss))
