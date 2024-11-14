@@ -32,7 +32,7 @@ def trainer(rank, world_size):
     device = torch.device("cuda", rank)
 
     # 3. Define Model, Loss, and Optimizer
-    gpt2_small = GPT.from_pretrained("gpt2")
+    model = GPT.from_pretrained("gpt2")
     model.to(torch.bfloat16).to(device)
     model = DDP(model, device_ids=[rank])  # Wrap model in DDP
     
