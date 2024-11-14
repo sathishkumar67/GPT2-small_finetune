@@ -12,6 +12,7 @@ from huggingface_hub import hf_hub_download
 from model import GPTConfig, GPT
 from dataset import TokenDataset
 from tqdm import tqdm
+import time
 
 
 hf_hub_download(repo_id="pt-sk/chatgpt-dataset", filename="conversation_tokens.npy", repo_type="dataset", local_dir="/kaggle/working")
@@ -59,10 +60,12 @@ def trainer(rank, world_size):
     model.train()
     training_loss = []
     gradient_norms = []
+    time_spent = []
     for epoch in range(config.epochs) :  # Loop over the dataset multiple times
         sampler.set_epoch(epoch)  # Shuffle data per epoch for 
         
-        for batch, (inputs, labels) in enumerate(tqdm(dataloader, )):
+        for batch, (inputs, labels) in enumerate(dataloader):
+            start_time = time.time()
             # Move data to device
             inputs, labels = inputs.to(device), labels.to(device)
 
@@ -84,14 +87,16 @@ def trainer(rank, world_size):
             # Log training loss and gradient norms
             training_loss.append(loss.item())
             gradient_norms.append(grad_norm.item())
-
+            time_spent.append(time.time() - start_time)
             if rank == 0:
-                print(f"Epoch: {epoch}, Batch: {batch}, Loss: {loss.item()}, Gradient Norm: {grad_norm.item()}")
-                
+                print(f"Epoch: {epoch}, Batch: {batch}, Loss: {loss.item()}, Gradient Norm: {grad_norm.item()}, Time Spent: {time_spent[-1]} seconds")
+
+
     # Log training loss and gradient norms
     if rank == 0:
         np.save("training_loss.npy", np.array(training_loss))
         np.save("gradient_norms.npy", np.array(gradient_norms))
+        np.save("time_spent.npy", np.array(time_spent))
 
         # Save the model and optimizer states for checkpointing
         torch.save(
