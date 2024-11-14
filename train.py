@@ -89,7 +89,7 @@ def trainer(rank, world_size):
             gradient_norms.append(grad_norm.item())
             time_spent.append(time.time() - start_time)
             if rank == 0:
-                print(f"Epoch: {epoch}, Batch: {batch}, Loss: {loss.item()}, Gradient Norm: {grad_norm.item()}, Time Spent: {time_spent[-1]} seconds")
+                print(f"Epoch: {epoch}, Batch: {batch}, Loss: {loss.item()}, Gradient Norm: {grad_norm.item()}, Time Spent: {round(time_spent[-1], 2)} seconds")
 
 
     # Log training loss and gradient norms
