@@ -22,6 +22,11 @@ class GPTConfig:
     betas: Tuple[float, float]
     seed: int
     epochs: int
+    training_backend: str
+    device: str
+    model_name: str
+    clip_grad_norm_val: float
+    dtype: torch.dtype = torch.bfloat16
 
 
 class CausalSelfAttention(nn.Module):
