@@ -85,12 +85,22 @@ def trainer(rank, world_size):
             training_loss.append(loss.item())
             gradient_norms.append(grad_norm.item())
 
-            tqdm.postfix(loss=loss.item(), grad_norm=grad_norm.item())
-            
+            if rank == 0:
+                print(f"Epoch: {epoch}, Batch: {batch}, Loss: {loss.item()}, Gradient Norm: {grad_norm.item()}")
+                
     # Log training loss and gradient norms
     if rank == 0:
         np.save("training_loss.npy", np.array(training_loss))
         np.save("gradient_norms.npy", np.array(gradient_norms))
+
+        # Save the model and optimizer states for checkpointing
+        torch.save(
+            {
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+            },
+            "checkpoint.pth",
+        )
 
     # Cleanup
     dist.destroy_process_group()
