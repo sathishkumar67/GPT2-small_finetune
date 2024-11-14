@@ -1,6 +1,6 @@
 from __future__ import annotations
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 from model import GPTConfig
 from typing import Tuple, List
 
