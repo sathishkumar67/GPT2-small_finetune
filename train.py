@@ -52,7 +52,7 @@ def trainer(rank, world_size):
             inputs, labels = inputs.to(device), labels.to(device)
 
             # Forward pass
-            _, loss = model(inputs)
+            _, loss = model(inputs, labels)
             
             # Backward pass and optimization
             optimizer.zero_grad()
