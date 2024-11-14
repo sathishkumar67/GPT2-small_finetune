@@ -42,7 +42,7 @@ def trainer(rank, world_size):
     dataset = TokenDataset(config, tokens)
 
     sampler = DistributedSampler(dataset, num_replicas=world_size, rank=rank)
-    dataloader = DataLoader(dataset, batch_size=config.batch_size, sampler=sampler, drop_last=True, shuffle=True)
+    dataloader = DataLoader(dataset, batch_size=config.batch_size, sampler=sampler, drop_last=True)
 
     # 5. Training Loop
     model.train()
