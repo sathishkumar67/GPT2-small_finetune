@@ -1,14 +1,14 @@
 from __future__ import annotations
 import torch
 from torch.utils.data import Dataset, DataLoader
-from model import ModelArgs
+from model import GPTConfig
 from typing import Tuple, List
 
 
 
 
 class TokenDataset(Dataset):
-    def __init__(self, model_args: ModelArgs, input_ids: List) -> None:
+    def __init__(self, model_args: GPTConfig, input_ids: List) -> None:
         """
         Initializes the TokenDataset.
 
