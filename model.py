@@ -208,4 +208,4 @@ class GPT2Wrapper(L.LightningModule):
         return loss
     
     def configure_optimizers(self):
-        return torch.optim.AdamW(self.model.parameters(), lr=self.config.learning_rate)
+        return torch.optim.AdamW(self.model.parameters(), lr=self.config.learning_rate, betas=self.config.betas, eps=self.config.eps, weight_decay=self.config.weight_decay)
