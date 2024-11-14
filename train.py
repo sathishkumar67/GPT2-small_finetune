@@ -16,7 +16,7 @@ import time
 
 
 hf_hub_download(repo_id="pt-sk/chatgpt-dataset", filename="file_1.npy", repo_type="dataset", local_dir="/kaggle/working")
-tokens = np.load("/kaggle/working/df_conversations.npy")
+tokens = np.load("/kaggle/working/file_1.npy")
 print(f"Number of tokens: {len(tokens)}")
 
 
