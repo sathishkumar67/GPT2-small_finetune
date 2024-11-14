@@ -23,7 +23,7 @@ class TokenDataset(Dataset):
                 the maximum sequence length in model_args.
         """
         self.input_ids = input_ids
-        self.block_size = model_args.max_seq_len
+        self.block_size = model_args.block_size
 
     def __len__(self) -> int:
         """
