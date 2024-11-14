@@ -4,6 +4,8 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 import gin
+import lightning as L
+from typing import Tuple
 
 
 @gin.configurable
@@ -16,6 +18,9 @@ class GPTConfig:
     n_embd: int 
     batch_size: int 
     learning_rate: float
+    weight_decay: float
+    eps: float
+    betas: Tuple[float, float]
     seed: int
     epochs: int
 
@@ -178,3 +183,29 @@ class GPT(nn.Module):
                     sd[k].copy_(sd_hf[k])
 
         return model
+    
+
+
+class GPT2Wrapper(L.LightningModule):
+    def __init__(self, config: GPTConfig, model: GPT):
+        super().__init__()
+        self.config = config
+        self.model = model    
+        self.optimizer = self.configure_optimizers()
+
+    def forward(self, idx, targets=None):
+        return self.model(idx, targets)
+
+    def training_step(self, batch, batch_idx):
+        self.model.train()
+        optimizer = self.optimizers()
+        optimizer.zero_grad()
+        
+        batch, label = batch
+        logits, loss = self.model(batch, label)
+        self.log("Train_Loss", loss, prog_bar=True)
+
+        return loss
+    
+    def configure_optimizers(self):
+        return torch.optim.AdamW(self.model.parameters(), lr=self.config.learning_rate)

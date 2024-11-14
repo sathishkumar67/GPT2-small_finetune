@@ -7,3 +7,6 @@ GPTConfig.batch_size = 16
 GPTConfig.learning_rate = 3e-4         
 GPTConfig.seed = 42                    
 GPTConfig.epochs = 1
+GPTConfig.weight_decay = 0.001
+GPTConfig.eps = 1e-8
+GPTConfig.betas = (0.9, 0.95)
