@@ -55,6 +55,7 @@ def trainer(rank, world_size):
     sampler = DistributedSampler(dataset, num_replicas=world_size, rank=rank)
     # Use DataLoader to manage batches
     dataloader = DataLoader(dataset, batch_size=config.batch_size, sampler=sampler, drop_last=True)
+    print(f"dataloader size: {len(dataloader)}")
 
 
     # Training Loop
