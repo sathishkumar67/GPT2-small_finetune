@@ -50,11 +50,11 @@ def trainer(rank, world_size):
     device = torch.device(config.device, rank)
 
     # Define Model and Optimizer
-    model = GPT.from_pretrained(config.model_name)
-    model.load_state_dict(checkpoint["model_state_dict"])
+    model = GPT(config)
     model.to(config.dtype).to(device)
     model = DDP(model, device_ids=[rank])  # Wrap model in DDP
-
+    model.load_state_dict(checkpoint["model_state_dict"])
+    
     # Define Optimizer    
     optimizer = optim.AdamW(model.parameters(), lr=config.learning_rate, betas=config.betas, eps=config.eps, weight_decay=config.weight_decay)
     # Load the optimizer state
@@ -114,7 +114,7 @@ def trainer(rank, world_size):
         # Save the model and optimizer states for checkpointing
         torch.save(
             {
-                "model_state_dict": model.state_dict(),
+                "model_state_dict": model.module.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
             },
             "checkpoint.pth",
