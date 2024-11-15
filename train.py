@@ -51,10 +51,11 @@ def trainer(rank, world_size):
 
     # Define Model and Optimizer
     model = GPT(config)
+    state_dict = {k.replace("module.", ""): v for k, v in checkpoint["model_state_dict"].items()}
+    model.load_state_dict(state_dict)
     model.to(config.dtype).to(device)
     model = DDP(model, device_ids=[rank])  # Wrap model in DDP
-    model.load_state_dict(checkpoint["model_state_dict"])
-    
+
     # Define Optimizer    
     optimizer = optim.AdamW(model.parameters(), lr=config.learning_rate, betas=config.betas, eps=config.eps, weight_decay=config.weight_decay)
     # Load the optimizer state
