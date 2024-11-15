@@ -15,8 +15,11 @@ from tqdm import tqdm
 import time
 
 
-hf_hub_download(repo_id="pt-sk/chatgpt-dataset", filename="file_1.npy", repo_type="dataset", local_dir="/kaggle/working")
-tokens = np.load("/kaggle/working/file_1.npy")
+hf_hub_download(repo_id="pt-sk/GPT2_Finetune_dataset", filename="file_2.npy", repo_type="dataset", local_dir="/kaggle/working")
+hf_hub_download(repo_id="pt-sk/pt-sk/GPT2-small_Finetune", filename="1/checkpoint.pth", repo_type="model", local_dir="/kaggle/working")
+
+
+tokens = np.load("/kaggle/working/file_2.npy")
 print(f"Number of tokens: {len(tokens)}")
 
 
@@ -29,6 +32,9 @@ np.random.seed(config.seed)
 torch.manual_seed(config.seed)
 torch.cuda.manual_seed(config.seed)
 torch.cuda.manual_seed_all(config.seed)
+
+# load the checkpoint
+checkpoint = torch.load("/kaggle/working/1/checkpoint.pth")
 
 
 
@@ -43,11 +49,14 @@ def trainer(rank, world_size):
 
     # Define Model and Optimizer
     model = GPT.from_pretrained(config.model_name)
+    model.load_state_dict(checkpoint["model_state_dict"])
     model.to(config.dtype).to(device)
     model = DDP(model, device_ids=[rank])  # Wrap model in DDP
 
     # Define Optimizer    
     optimizer = optim.AdamW(model.parameters(), lr=config.learning_rate, betas=config.betas, eps=config.eps, weight_decay=config.weight_decay)
+    # Load the optimizer state
+    optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 
     # Create DataLoader
     dataset = TokenDataset(config, tokens)
