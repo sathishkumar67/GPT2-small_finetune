@@ -16,11 +16,13 @@ import time
 
 
 hf_hub_download(repo_id="pt-sk/GPT2_Finetune_dataset", filename="file_2.npy", repo_type="dataset", local_dir="/kaggle/working")
-hf_hub_download(repo_id="pt-sk/pt-sk/GPT2-small_Finetune", filename="1/checkpoint.pth", repo_type="model", local_dir="/kaggle/working")
+hf_hub_download(repo_id="pt-sk/GPT2-small_Finetune", filename="1/checkpoint.pth", repo_type="model", local_dir="/kaggle/working")
 
 
 tokens = np.load("/kaggle/working/file_2.npy")
+tokens = tokens[:107808979]
 print(f"Number of tokens: {len(tokens)}")
+
 
 
 
