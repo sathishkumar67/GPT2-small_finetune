@@ -36,7 +36,7 @@ torch.cuda.manual_seed(config.seed)
 torch.cuda.manual_seed_all(config.seed)
 
 # load the checkpoint
-checkpoint = torch.load("/kaggle/working/1/checkpoint.pth")
+checkpoint = torch.load("/kaggle/working/2/checkpoint.pth")
 
 
 
